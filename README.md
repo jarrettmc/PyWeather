@@ -1,1 +1,3 @@
 # PyWeather
+
+Initial GIT offering
