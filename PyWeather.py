@@ -1,14 +1,12 @@
-#PyWeather V2.02 by Jarrett McAlicher - 7/29/2018
+#PyWeather V2.03 by Jarrett McAlicher - 7/29/2018
 #Git
-ver=2.02
+#2.03 5/29/2021 Fix "None type error"
+ver=2.03
 import sys
 import xml.etree.ElementTree as et
 
 if sys.version_info[0]==2:
-    import urllib2
-    def weburl(url):
-        file=urllib2.urlopen(url)
-        return file
+    print('Must use Python 3. Does not work with Python2.')
 else:
     import urllib.request
     def weburl(url):
@@ -148,12 +146,19 @@ def get_forecast(zip,debug=False):
             elif daynumber==1: dname='Tomorrow'
             else: dname=dcurrent            
             #create temp list
-            mintemp.append(root[4][xml_step][4].get('min'))
-            maxtemp.append(root[4][xml_step][4].get('max'))
+            #2.03 updated to #5 (need to update to a better method of pulling this data)
+            mintemp.append(root[4][xml_step][5].get('min'))
+            maxtemp.append(root[4][xml_step][5].get('max'))
             icon=root[4][xml_step][0].get('name')
-            low_temp=k2f(float(min(mintemp)))
-            high_temp=k2f(float(max(maxtemp)))
-                        
+            try:
+                low_temp=k2f(float(min(mintemp)))
+            except TypeError:
+                if debug==True: print(mintemp)
+            try:
+                high_temp=k2f(float(max(maxtemp)))
+            except TypeError:
+                if debug==True: print(maxtemp)  
+                      
             if debug==True:
                 print('\n-----------------------------------------')
                 print('step #'+str(step_number) +'| Day#'+str(daynumber)+' | xml# '+str(xml_step)) 
